@@ -37,36 +37,36 @@ class GwSpider(scrapy.Spider):
         pattern = r'"databaseId":\d+'
         links = re.findall(pattern, html_content)
         current_vacancies = set()
-        link ='https://www.group-working.com/ua/job/4020'
-        yield scrapy.Request(url=link, callback=self.parse_vacancy)
+        # link ='https://www.group-working.com/ua/job/4020'
+        # yield scrapy.Request(url=link, callback=self.parse_vacancy)
 
 
-        # for link in links:
-        #     current_vacancies.add(link)
+        for link in links:
+            current_vacancies.add(link)
 
-        #     if link not in self.existing_vacancies:
-        #         yield scrapy.Request(url=f'{self.base_url}{link.split(":")[-1]}', callback=self.parse_vacancy)
+            if link not in self.existing_vacancies:
+                yield scrapy.Request(url=f'{self.base_url}{link.split(":")[-1]}', callback=self.parse_vacancy)
 
-        # # Обновляем вакансии, которых больше нет на сайте
-        # inactive_vacancies = self.existing_vacancies - current_vacancies
-        # if inactive_vacancies:
-        #     print(f"Видалені вакансії: {inactive_vacancies}")
-        #     # Обновляем связанные записи, устанавливая selected_vacancy_id в NULL
-        #     self.cursor.executemany(
-        #         """
-        #         UPDATE vac_form_jobapplication
-        #         SET selected_vacancy_id = NULL
-        #         WHERE selected_vacancy_id = %s
-        #         """,
-        #         [(vac_id,) for vac_id in inactive_vacancies]
-        #     )
-        #     self.conn.commit()
-        #     # Удаляем неактивные вакансии
-        #     self.cursor.executemany(
-        #         "DELETE FROM vac_form_vacancy WHERE site = %s AND vac_id = %s", 
-        #         [('group-working.com', vac_id) for vac_id in inactive_vacancies]
-        #     )
-        #     self.conn.commit()
+        # Обновляем вакансии, которых больше нет на сайте
+        inactive_vacancies = self.existing_vacancies - current_vacancies
+        if inactive_vacancies:
+            print(f"Видалені вакансії: {inactive_vacancies}")
+            # Обновляем связанные записи, устанавливая selected_vacancy_id в NULL
+            self.cursor.executemany(
+                """
+                UPDATE vac_form_jobapplication
+                SET selected_vacancy_id = NULL
+                WHERE selected_vacancy_id = %s
+                """,
+                [(vac_id,) for vac_id in inactive_vacancies]
+            )
+            self.conn.commit()
+            # Удаляем неактивные вакансии
+            self.cursor.executemany(
+                "DELETE FROM vac_form_vacancy WHERE site = %s AND vac_id = %s", 
+                [('group-working.com', vac_id) for vac_id in inactive_vacancies]
+            )
+            self.conn.commit()
 
     def parse_vacancy(self, response):
         print(response.url)
@@ -124,7 +124,7 @@ class GwSpider(scrapy.Spider):
 
         data = {key: extract_info(pattern, description) for key, pattern in patterns.items()}
         data["site"] = "www.group-working.com"
-        print(data)
+        # print(data)
         # Обработка возраста и пола
         if data["age"]:
             age_numbers = re.findall(r'\d+', data["age"])
