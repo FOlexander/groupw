@@ -1,0 +1,5 @@
+
+groupw/proxies.txt
+groupw/spiders/.env
+*env
+*.txt
