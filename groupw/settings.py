@@ -55,7 +55,7 @@ DOWNLOADER_MIDDLEWARES = {
     'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
 }
 
-ROTATING_PROXY_LIST_PATH = 'proxies.txt'
+ROTATING_PROXY_LIST_PATH = 'groupw/proxies.txt'
 ROTATING_PROXY_PAGE_RETRY_TIMES = 5
 ROTATING_PROXY_BACKOFF_BASE = 300
 
