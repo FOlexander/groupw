@@ -17,7 +17,7 @@ class GwSpider(scrapy.Spider):
     def __init__(self):
         # Подключение к базе данных
         self.conn = psycopg2.connect(
-            dbname=os.getenv("NAME"),
+            dbname=os.getenv("DB_NAME"),
             user=os.getenv("DB_USER"),
             password=os.getenv("PASSWORD"),
             host=os.getenv("HOST"),
