@@ -37,36 +37,36 @@ class GwSpider(scrapy.Spider):
         pattern = r'"databaseId":\d+'
         links = re.findall(pattern, html_content)
         current_vacancies = set()
-        # link ='https://www.group-working.com/ua/job/2975'
-        # yield scrapy.Request(url=link, callback=self.parse_vacancy)
+        link ='https://www.group-working.com/ua/job/4020'
+        yield scrapy.Request(url=link, callback=self.parse_vacancy)
 
 
-        for link in links:
-            current_vacancies.add(link)
+        # for link in links:
+        #     current_vacancies.add(link)
 
-            if link not in self.existing_vacancies:
-                yield scrapy.Request(url=f'{self.base_url}{link.split(":")[-1]}', callback=self.parse_vacancy)
+        #     if link not in self.existing_vacancies:
+        #         yield scrapy.Request(url=f'{self.base_url}{link.split(":")[-1]}', callback=self.parse_vacancy)
 
-        # Обновляем вакансии, которых больше нет на сайте
-        inactive_vacancies = self.existing_vacancies - current_vacancies
-        if inactive_vacancies:
-            print(f"Видалені вакансії: {inactive_vacancies}")
-            # Обновляем связанные записи, устанавливая selected_vacancy_id в NULL
-            self.cursor.executemany(
-                """
-                UPDATE vac_form_jobapplication
-                SET selected_vacancy_id = NULL
-                WHERE selected_vacancy_id = %s
-                """,
-                [(vac_id,) for vac_id in inactive_vacancies]
-            )
-            self.conn.commit()
-            # Удаляем неактивные вакансии
-            self.cursor.executemany(
-                "DELETE FROM vac_form_vacancy WHERE site = %s AND vac_id = %s", 
-                [('group-working.com', vac_id) for vac_id in inactive_vacancies]
-            )
-            self.conn.commit()
+        # # Обновляем вакансии, которых больше нет на сайте
+        # inactive_vacancies = self.existing_vacancies - current_vacancies
+        # if inactive_vacancies:
+        #     print(f"Видалені вакансії: {inactive_vacancies}")
+        #     # Обновляем связанные записи, устанавливая selected_vacancy_id в NULL
+        #     self.cursor.executemany(
+        #         """
+        #         UPDATE vac_form_jobapplication
+        #         SET selected_vacancy_id = NULL
+        #         WHERE selected_vacancy_id = %s
+        #         """,
+        #         [(vac_id,) for vac_id in inactive_vacancies]
+        #     )
+        #     self.conn.commit()
+        #     # Удаляем неактивные вакансии
+        #     self.cursor.executemany(
+        #         "DELETE FROM vac_form_vacancy WHERE site = %s AND vac_id = %s", 
+        #         [('group-working.com', vac_id) for vac_id in inactive_vacancies]
+        #     )
+        #     self.conn.commit()
 
     def parse_vacancy(self, response):
         print(response.url)
@@ -92,22 +92,39 @@ class GwSpider(scrapy.Spider):
 
         description_list = response.css('.open__content div > p::text').getall()
         description = ''.join(description_list)
-        patterns = {
-            "docs_need": r"Додатково:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "schedule": r"Графік роботи:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "apartment": r"Житло:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "uniform": r"Спецодяг:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "transfer": r"Трансфер на роботу:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "age": r"Для кого:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "experience": r"Досвід:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "language": r"Знання мови:\s*(.*?)[\U0001F300-\U0001FAD6➕]",
-            "duties": r"Обов’язки:\s*(.*?)[\U0001F300-\U0001FAD6]",
-            "payment": r"Оплата чистими:\s*(.*?)[\U0001F300-\U0001FAD6]",
-        }
+        if ':' in description:
+            patterns = {
+                "vaccity": r"Місто:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "docs_need": r"Додатково:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "schedule": r"Графік роботи:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "apartment": r"Житло:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "uniform": r"Спецодяг:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "transfer": r"Трансфер на роботу:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "age": r"Для кого:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "experience": r"Досвід:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "language": r"Знання мови:\s*(.*?)[\U0001F300-\U0001FAD6➕]",
+                "duties": r"Обов’язки:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "payment": r"Оплата чистими:\s*(.*?)[\U0001F300-\U0001FAD6]",
+            }
+        else:
+            patterns = {
+                "vaccity": r"🌆\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "docs_need": r"➕\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "schedule": r"🗓\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "apartment": r"🏘\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "uniform": r"🦺\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "transfer": r"🚌\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "age": r"👨‍🔧\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "experience": r"💡\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "language": r"📚\s*(.*?)[\U0001F300-\U0001FAD6➕]",
+                "duties": r"🔑\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "payment": r"💶\s*(.*?)[\U0001F300-\U0001FAD6]",
+            }
+
 
         data = {key: extract_info(pattern, description) for key, pattern in patterns.items()}
         data["site"] = "www.group-working.com"
-
+        print(data)
         # Обработка возраста и пола
         if data["age"]:
             age_numbers = re.findall(r'\d+', data["age"])
