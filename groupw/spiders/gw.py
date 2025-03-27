@@ -173,7 +173,7 @@ class GwSpider(scrapy.Spider):
                 active = EXCLUDED.active,
                 site = EXCLUDED.site
             """,
-            (vac_id, position, job_category, country, salary, date_posted, data["sex"], vaccity,
+            (vac_id, position, job_category, country, salary, date_posted, data["sex"], data["vaccity"],
              data["docs_need"], data["schedule"], data["apartment"], data["uniform"], tools, data["transfer"], 
              data["age"], data["min_age"], data["max_age"], data["experience"],
              data["language"], data["duties"], data["payment"], active, data["site"])
