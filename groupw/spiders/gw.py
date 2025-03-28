@@ -37,7 +37,7 @@ class GwSpider(scrapy.Spider):
         pattern = r'"databaseId":\d+'
         links = re.findall(pattern, html_content)
         current_vacancies = set()
-        # link ='https://www.group-working.com/ua/job/2849'
+        # link ='https://www.group-working.com/ua/job/3957'
         # yield scrapy.Request(url=link, callback=self.parse_vacancy)
 
 
@@ -93,7 +93,7 @@ class GwSpider(scrapy.Spider):
         description_list = response.css('.open__content div > p::text').getall()
         description = ''.join(description_list)
         # print(description)
-        if ':' in description:
+        if 'Бельгія' not in description:
             patterns = {
                 "vaccity": r"Місто:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "docs_need": r"Додатково:(?:\s*\n)?(.*)",
@@ -102,7 +102,7 @@ class GwSpider(scrapy.Spider):
                 "uniform": r"Спецодяг:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "transfer": r"Трансфер на роботу:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "age": r"Для кого:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "experience": r"Досвід:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "experience": r"Досвід:\s*(.*?)[\U0001F300-\U0001FAD6]❗️",
                 "language": r"Знання мови:\s*(.*?)[\U0001F300-\U0001FAD6➕]",
                 "duties": r"Обов’язки:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "payment": r"Оплата чистими:\s*(.*?)[\U0001F300-\U0001FAD6]",
@@ -116,7 +116,7 @@ class GwSpider(scrapy.Spider):
                 "uniform": r"🦺\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "transfer": r"🚌\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "age": r"👨‍🔧\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "experience": r"💡\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "experience": r"💡\s*(.*?)[\U0001F300-\U0001FAD6]❗️",
                 "language": r"📚\s*(.*?)[\U0001F300-\U0001FAD6➕]",
                 "duties": r"🔑\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "payment": r"💶\s*(.*?)[\U0001F300-\U0001FAD6]",
