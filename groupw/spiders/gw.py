@@ -37,7 +37,7 @@ class GwSpider(scrapy.Spider):
         pattern = r'"databaseId":\d+'
         links = re.findall(pattern, html_content)
         current_vacancies = set()
-        # link ='https://www.group-working.com/ua/job/3957'
+        # link ='https://www.group-working.com/ua/job/3850'
         # yield scrapy.Request(url=link, callback=self.parse_vacancy)
 
 
@@ -69,7 +69,7 @@ class GwSpider(scrapy.Spider):
             self.conn.commit()
 
     def parse_vacancy(self, response):
-        print(response.url)
+        # print(response.url)
         # with open("test.html", "w", encoding='utf-8') as f:
         #     f.write(response.text)
         vac_id = response.url.split("/")[-1]
@@ -91,9 +91,10 @@ class GwSpider(scrapy.Spider):
             return match.group(1) if match else default
 
         description_list = response.css('.open__content div > p::text').getall()
+        strong_list = response.css('.open__content div > p strong::text').getall()
         description = ''.join(description_list)
-        # print(description)
-        if 'Бельгія' not in description:
+        # print(strong_list)
+        if not strong_list:
             patterns = {
                 "vaccity": r"Місто:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "docs_need": r"Додатково:(?:\s*\n)?(.*)",
