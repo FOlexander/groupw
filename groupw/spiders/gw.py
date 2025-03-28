@@ -37,7 +37,7 @@ class GwSpider(scrapy.Spider):
         pattern = r'"databaseId":\d+'
         links = re.findall(pattern, html_content)
         current_vacancies = set()
-        # link ='https://www.group-working.com/ua/job/4020'
+        # link ='https://www.group-working.com/ua/job/2849'
         # yield scrapy.Request(url=link, callback=self.parse_vacancy)
 
 
@@ -92,10 +92,11 @@ class GwSpider(scrapy.Spider):
 
         description_list = response.css('.open__content div > p::text').getall()
         description = ''.join(description_list)
+        # print(description)
         if ':' in description:
             patterns = {
                 "vaccity": r"Місто:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "docs_need": r"Додатково:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "docs_need": r"Додатково:(?:\s*\n)?(.*)",
                 "schedule": r"Графік роботи:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "apartment": r"Житло:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "uniform": r"Спецодяг:\s*(.*?)[\U0001F300-\U0001FAD6]",
@@ -109,7 +110,7 @@ class GwSpider(scrapy.Spider):
         else:
             patterns = {
                 "vaccity": r"🌆\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "docs_need": r"➕\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "docs_need": r"➕(?:\s*\n)?(.*)",
                 "schedule": r"🗓\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "apartment": r"🏘\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "uniform": r"🦺\s*(.*?)[\U0001F300-\U0001FAD6]",
