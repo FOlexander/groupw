@@ -11,8 +11,8 @@ load_dotenv()
 class GwSpider(scrapy.Spider):
     name = "gw"
     allowed_domains = ["www.group-working.com"]
-    start_urls = ["https://www.group-working.com/ua/jobs"]
-    base_url = "https://www.group-working.com/ua/job/"
+    start_urls = ["https://www.group-working.com/ru/jobs"]
+    base_url = "https://www.group-working.com/ru/job/"
 
     def __init__(self):
         # Подключение к базе данных
@@ -96,17 +96,17 @@ class GwSpider(scrapy.Spider):
         # print(strong_list)
         if not strong_list:
             patterns = {
-                "vaccity": r"Місто:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "docs_need": r"Додатково:(?:\s*\n)?(.*)",
-                "schedule": r"Графік роботи:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "apartment": r"Житло:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "uniform": r"Спецодяг:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "transfer": r"Трансфер на роботу:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "vaccity": r"Город:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "docs_need": r"Дополнительно:(?:\s*\n)?(.*)",
+                "schedule": r"График работы:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "apartment": r"Жилье:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "uniform": r"Спецодежда:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "transfer": r"Трансфер на работу:\s*(.*?)[\U0001F300-\U0001FAD6]",
                 "age": r"Для кого:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "experience": r"Досвід:\s*(.*?)[\U0001F300-\U0001FAD6]❗️",
-                "language": r"Знання мови:\s*(.*?)[\U0001F300-\U0001FAD6➕]",
-                "duties": r"Обов’язки:\s*(.*?)[\U0001F300-\U0001FAD6]",
-                "payment": r"Оплата чистими:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "experience": r"Опыт:\s*(.*?)[\U0001F300-\U0001FAD6]❗️",
+                "language": r"Знание языка:\s*(.*?)[\U0001F300-\U0001FAD6➕]",
+                "duties": r"Обязанности:\s*(.*?)[\U0001F300-\U0001FAD6]",
+                "payment": r"Оплата чистыми:\s*(.*?)[\U0001F300-\U0001FAD6]",
             }
         else:
             patterns = {
